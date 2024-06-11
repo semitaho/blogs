@@ -1,6 +1,6 @@
 package com.taho.guides.useoptional;
 
-public enum PersonCarModel {
+enum CarModel {
   TESLA,
   NISSAN,
   TOYOTA

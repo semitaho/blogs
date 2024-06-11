@@ -1,4 +1,4 @@
 package com.taho.guides.useoptional;
 
-public record Car(String name, PersonCarModel model) {
+public record Car(String name, CarModel model) {
 }
