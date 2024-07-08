@@ -23,14 +23,13 @@ public class MemoryDb {
                   NISSAN, PETROL,
                   TOYOTA, HYBRID,
                   TESLA, ELECTRIC);
-  private static final List<Person> PERSONS = List.of(
+  static final List<Person> PERSONS = List.of(
           // toni owns car..
           new Person(2L, "Toni", Optional.of(new Car("Toyota Yaris", TOYOTA))),
           // not everyone owns car...
           new Person(13L, "Jan", empty())
 
   );
-
 
 
   public Optional<Person> getById(final Long id) {
