@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 import static com.taho.guides.useoptional.MemoryDb.CAR_MODEL_POWER_MAP;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -15,6 +17,13 @@ public class PersonCarModelController {
 
   public PersonCarModelController(final PersonCarModelService personCarModelService) {
     this.personCarModelService = personCarModelService;
+
+  }
+
+  public String deduceCityOfPerson(Person person) {
+
+    Optional<Car> personsCar = Optional.ofNullable(person.c());
+
   }
 
   @GetMapping("/person/{personId}/carpower")
