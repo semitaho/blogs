@@ -10,7 +10,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 
+import static com.tahoo.guides.chatgptjava.ChatGptUtil.convertToJsonMap;
 import static com.tahoo.guides.chatgptjava.ChatGptUtil.createMessages;
+import static com.tahoo.guides.chatgptjava.ChatGptUtil.getContent;
 
 @Service
 public class ChatGptService {
@@ -31,15 +33,16 @@ public class ChatGptService {
 
             .retrieve()
 
-            .bodyToMono(ChatGptResponse.class)
+            .bodyToMono(String.class)
             .doOnError(consumer -> {
               log.warn("ei näin: {}", consumer);
             })
             .map(response -> {
-              log.info("PASKAN MÖIVÄT!! {}", response);
-              return response.choices().get(0).message().content();
+              final var jsonMap = convertToJsonMap(response);
+              return getContent(jsonMap, "message");
             });
   }
+
 
   private static Map<String, Object> createRequest(final String message) {
     final var request =  Map.of(

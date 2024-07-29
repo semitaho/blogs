@@ -1,27 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <title>Home</title>
-</head>
-<body>
-<h1>Chat GPT streaming</h1>
-<div id="response"></div>
-<script>
-        const eventSource = new EventSource('/chatstream?prompt=mitä+kuuluu');
-        const responseDiv = document.getElementById('response');
+  </head>
+  <body class="container mx-auto">
+    <h1 class="font-extrabold text-center mb-5">Chat GPT streaming</h1>
+    <form
+      class="max-w-sm mx-auto mb-4"
+      onsubmit="howDoYouDo(event, document.getElementById('prompt'));"
+    >
+      <div class="mb-5">
+        <input
+          type="text"
+          class="block w-full rounded-lg p-2.5 border border-gray text-sm"
+          id="prompt"
+          placeholder="Ask AI"
+        />
+      </div>
+      <button
+        type="submit"
+        class="text-white w-full px-5 py-2.5 text-sm font-medium bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 rounded-lg focus:outline-none"
+      >Submit</button>
+    </form>
+    <div class="container mx-auto">
+      <div class="md:columns-2 columns-1 gap-5">
+        <div class="break-inside-avoid">
+          <h2 class="font-bold">ChatGPT using single text response</h2>
+          <div id="response"></div>
+        </div>
+        <div class="break-inside-avoid">
+          <h2 class="font-bold">ChatGPT using text response stream</h2>
+          <div id="response-stream"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      async function jsonResponse(value) {
+        const responseDiv = document.getElementById("response");
+        responseDiv.textContent = '';
 
-        eventSource.onmessage = function(event) {
-            const newElement = document.createElement('p');
-            newElement.textContent = event.data;
-            responseDiv.appendChild(newElement);
-        };
+        const response = await fetch("/chat?prompt=" + value, {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
+        const text = await response.text();
+        console.log('GOT json body', text);
+        responseDiv.textContent += text;
+      }
+      async function streamResponse(value) {
+        const responseStream = await fetch("/chatstream?prompt=" + value, {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
+        const responseDiv = document.getElementById("response-stream");
 
-        eventSource.onerror = function(err) {
-            console.error("EventSource failed:", err);
-            eventSource.close();
-        };
+        if (!responseStream.body) {
+          responseDiv.textContent = "No body!";
+          return;
+        }
+        responseDiv.textContent = "";
+        const reader = responseStream.body.getReader();
+        const decoder = new TextDecoder();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            break;
+          }
+          const textContent = decoder.decode(value, { stream: true });
+          console.log("READ:", textContent);
+          responseDiv.textContent += textContent.trim().replace("data:", "");
+        }
+      }
+      async function howDoYouDo(event, promptInput) {
+        event.preventDefault();
+        const value = promptInput.value;
+
+        promptInput.value = "";
+        promptInput.focus();
+
+        streamResponse(value);
+        jsonResponse(value);
+      }
     </script>
-</body>
+  </body>
 </html>
