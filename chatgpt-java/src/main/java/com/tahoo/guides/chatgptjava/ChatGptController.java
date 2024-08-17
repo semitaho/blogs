@@ -19,7 +19,6 @@ public class ChatGptController {
   public ChatGptController(ChatGptService chatGptService) {
     this.chatGptService = chatGptService;
   }
-
   @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
   public Mono<String> chat(
           @RequestParam("prompt")

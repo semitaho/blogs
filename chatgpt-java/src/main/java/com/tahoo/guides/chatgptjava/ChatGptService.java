@@ -7,18 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Map;
 
-import static com.tahoo.guides.chatgptjava.ChatGptUtil.convertToJsonMap;
 import static com.tahoo.guides.chatgptjava.ChatGptUtil.createMessages;
 import static com.tahoo.guides.chatgptjava.ChatGptUtil.getContent;
 
 @Service
 public class ChatGptService {
-
-
-
   final static Logger log = LoggerFactory.getLogger(ChatGptService.class);
   public final WebClient client;
 
@@ -30,30 +25,23 @@ public class ChatGptService {
     final var request = createRequest(message);
     return client.post()
             .bodyValue(request)
-
             .retrieve()
-
-            .bodyToMono(String.class)
+            .bodyToMono(Map.class)
             .doOnError(consumer -> {
-              log.warn("ei näin: {}", consumer);
+              log.warn("error occured: {}", consumer);
             })
-            .map(response -> {
-              final var jsonMap = convertToJsonMap(response);
-              return getContent(jsonMap, "message");
-            });
+            .map(jsonMap ->
+                    getContent(jsonMap, "message")
+            );
   }
 
-
   private static Map<String, Object> createRequest(final String message) {
-    final var request =  Map.of(
+    final var request = Map.of(
             "model", "gpt-3.5-turbo",
             "stream", false,
             "messages", createMessages(message)
-
     );
-
     log.info("Chat GPT request: {}", request);
-
     return request;
   }
 
