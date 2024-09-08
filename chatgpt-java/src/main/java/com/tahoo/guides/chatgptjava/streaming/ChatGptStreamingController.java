@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
@@ -19,7 +20,6 @@ public class ChatGptStreamingController implements Function<String, Flux<String>
   public ChatGptStreamingController(ChatGptStreamingService chatGptStreamingService) {
     this.chatGptStreamingService = chatGptStreamingService;
   }
-
 
   @GetMapping( produces = TEXT_EVENT_STREAM_VALUE)
   @Override

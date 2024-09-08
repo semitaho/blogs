@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.netty.internal.util.MapUtils;
 
 import java.time.Duration;
@@ -25,8 +26,6 @@ import static java.util.Optional.ofNullable;
 
 @Service
 public class ChatGptStreamingService implements Function<String, Flux<String>> {
-
-  final static Logger log = LoggerFactory.getLogger(ChatGptStreamingService.class);
   public final WebClient client;
 
   private static final Long STREAMING_DURATION_MS = 100L;
@@ -51,23 +50,17 @@ public class ChatGptStreamingService implements Function<String, Flux<String>> {
   }
 
 
-
   private static Predicate<String> streamChunk() {
     return currentVal -> !currentVal.contains("DONE") && currentVal.contains("content");
   }
 
-  private static Function<Object, Map<String, Object>> toMap() {
-    return obj -> ((Map<String, Object>) obj);
-  }
-
 
   private static Map<String, Object> createRequest(final String message) {
-    final var request = Map.of(
+    return Map.of(
             "model", "gpt-3.5-turbo",
             "stream", true,
             "messages", createMessages(message)
 
     );
-    return request;
   }
 }
