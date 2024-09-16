@@ -1,5 +1,6 @@
 package com.tahoo.guides.gracefulshutdown;
 
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +18,15 @@ public class GracefulShutdownController {
 
   @GetMapping("/longprocess")
   public String longProcess() throws InterruptedException{
-    LOG.info("STARTING graceful shutdown");
+    LOG.info("STARTING longproces");
     Thread.sleep(Duration.ofSeconds(HOLD_THREAD_SECONDS));
+    LOG.info("COMPLETING longprocess");
     return "OK";
+  }
+
+  @GetMapping("/processnotavailable")
+  public String processNotAvailable() {
+    LOG.info("processnotavailable");
+    return "Process should not be handled";
   }
 }
