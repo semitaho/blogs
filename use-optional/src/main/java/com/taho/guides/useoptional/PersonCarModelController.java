@@ -22,7 +22,8 @@ public class PersonCarModelController {
 
   public String deduceCityOfPerson(Person person) {
 
-    Optional<Car> personsCar = Optional.ofNullable(person.c());
+    return Optional.ofNullable(person.city())
+            .orElse(null);
 
   }
 

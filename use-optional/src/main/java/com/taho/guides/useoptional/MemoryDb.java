@@ -25,9 +25,9 @@ public class MemoryDb {
                   TESLA, ELECTRIC);
   static final List<Person> PERSONS = List.of(
           // toni owns car..
-          new Person(2L, "Toni", Optional.of(new Car("Toyota Yaris", TOYOTA))),
+          new Person(2L, "Toni", "Vimpeli", Optional.of(new Car("Toyota Yaris", TOYOTA))),
           // not everyone owns car...
-          new Person(13L, "Jan", empty())
+          new Person(13L, "Jan", "Espoo",empty())
 
   );
 
