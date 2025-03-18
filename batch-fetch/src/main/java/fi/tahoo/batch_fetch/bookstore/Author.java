@@ -2,6 +2,7 @@ package fi.tahoo.batch_fetch.bookstore;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -18,8 +19,8 @@ public class Author {
 
   private String name;
 
-  @BatchSize(size = 2)
-  @OneToMany(mappedBy = "author")
+  @BatchSize(size = 5)
+  @OneToMany(mappedBy = "author",fetch = FetchType.LAZY)
   private List<Book> bookList;
 
   public Long getAuthorId() {
