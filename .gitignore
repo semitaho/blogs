@@ -1,3 +1,6 @@
 /use-optional/.idea/
 /use-optional/target
 /**/.idea/**
+*.zip
+**/target
+.DS_Store
