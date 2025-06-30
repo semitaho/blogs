@@ -3,19 +3,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Web Application</title>
+    <style>
+      body {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
+      .record-button {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: red;
+        border: none;
+        box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.3);
+        cursor: pointer;
+        text-align: center;
+
+        transition: box-shadow 0.3s ease, transform 0.2s;
+      }
+
+      .record-button:hover {
+        box-shadow: 0 0 0 6px rgba(255, 0, 0, 0.5);
+        transform: scale(1.05);
+      }
+
+      .record-button:active {
+        transform: scale(0.95);
+      }
+
+      .recording {
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 10px rgba(255, 0, 0, 0.2);
+        }
+        100% {
+          box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.4);
+        }
+      }
+    </style>
   </head>
   <body>
     <h1>Welcome to My Web Application</h1>
     <p>This is a simple web application using Spring Boot.</p>
-    <p>Click the button to ask something from ChatGPT</p>
+    <p>Click the button to start recording and ask something from ChatGPT</p>
     <form onsubmit="return false;">
       <button
         id="startRecordingButton"
-        style="padding: 5px; width: 30%; margin-top: 10px"
+        class="record-button"
         onclick="startRecording()"
-      >
-        Start recording question
-      </button>
+      ></button>
       <button
         id="stopRecordingButton"
         style="padding: 5px; width: 30%; margin-top: 10px"
