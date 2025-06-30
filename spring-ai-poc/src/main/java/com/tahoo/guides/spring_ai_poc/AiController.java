@@ -15,20 +15,20 @@ public class AiController {
 
   private static final Logger LOG = LoggerFactory.getLogger(AiController.class);
 
-  private final SpeechToTextService audioToSpeechService;
+  private final SpeechToTextService speechToTextService;
 
   private final PromptToAudioOutputService promptToAudioOutputService;
 
 
   AiController(final SpeechToTextService speechToTextService, final PromptToAudioOutputService promptToAudioOutputService) {
-    this.audioToSpeechService = speechToTextService;
+    this.speechToTextService = speechToTextService;
     this.promptToAudioOutputService = promptToAudioOutputService;
   }
 
 
   @PostMapping(value = "/upload", consumes = AUDIO_MIME_TYPE)
   public byte[] askGPT(InputStream inputStream) {
-    return audioToSpeechService
+    return speechToTextService
             .andThen(AiController::logText)
             .andThen(promptToAudioOutputService).apply(inputStream);
   }
