@@ -10,8 +10,8 @@
         text-align: center;
       }
       .record-button {
-        width: 60px;
-        height: 60px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         background-color: red;
         border: none;
@@ -54,30 +54,17 @@
     <p>Click the button to start recording and ask something from ChatGPT</p>
     <form onsubmit="return false;">
       <button
-        id="startRecordingButton"
+        id="record-button"
         class="record-button"
-        onclick="startRecording()"
+        onclick="toggleRecording()"
       ></button>
-      <button
-        id="stopRecordingButton"
-        style="padding: 5px; width: 30%; margin-top: 10px"
-        onclick="stopRecording()"
-      >
-        Stop recording question
-      </button>
     </form>
 
-    <p id="message" style="display: none">Hello, this is a message!</p>
-    <img
-      id="openapi-image"
-      style="display: none"
-      src=""
-      width="400"
-      height="400"
-      alt="prefetched image"
-    />
     <script>
-      toggleButtons(false);
+      var recording = false;
+      const recordDom = document.getElementById("record-button");
+    //  toggleRecording(false);
+      toggleButtons(recording);
 
       let mediaRecorder = null;
       let chunks = [];
@@ -85,16 +72,22 @@
 
       function toggleButtons(playing) {
         if (playing) {
-          document.getElementById("stopRecordingButton").style.display =
-            "inline-block";
-          document.getElementById("startRecordingButton").style.display =
-            "none";
+          recordDom.classList.add("recording");
         } else {
-          document.getElementById("startRecordingButton").style.display =
-            "inline-block";
-          document.getElementById("stopRecordingButton").style.display = "none";
+          recordDom.classList.remove("recording");
         }
       }
+      function toggleRecording() {
+        recording = !recording;
+        console.log('recording', recording)
+        toggleButtons(recording);
+        if (recording) {
+          startRecording();
+        } else {
+          stopRecording();
+        }
+      }
+
       function startRecording() {
         console.log("Starting recording...", navigator.mediaDevices);
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -106,7 +99,6 @@
                 audio: true,
               }
             )
-
             // Success callback
             .then((stream) => {
               mediaRecorder = new MediaRecorder(stream);
@@ -167,7 +159,6 @@
       function stopRecording() {
         mediaRecorder.stop();
         console.log(mediaRecorder.state);
-        console.log("recorder stopped");
       }
 
       function processAudio(prompt) {
@@ -188,9 +179,6 @@
           })
           .catch((error) => console.error("Error playing audio:", error));
       }
-      //processAudio("Tell me, what is happening in the world");
-
-      // processImage();
     </script>
   </body>
 </html>

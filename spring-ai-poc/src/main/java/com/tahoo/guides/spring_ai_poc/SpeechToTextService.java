@@ -1,9 +1,12 @@
 package com.tahoo.guides.spring_ai_poc;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions;
+import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,9 @@ import java.util.function.Function;
 
 @Service
 public class SpeechToTextService implements Function<InputStream, String> {
+
+  private static final Logger log = LoggerFactory.getLogger(
+          SpeechToTextService.class);
 
   private final OpenAiAudioTranscriptionModel transcriptionModel;
 
@@ -28,9 +34,11 @@ public class SpeechToTextService implements Function<InputStream, String> {
                     OpenAiAudioTranscriptionOptions
                             .builder()
                             .temperature(0f)
-                            .language("en")
+                            .model(OpenAiApi.ChatModel.GPT_4_O.value)
                             .build()));
-    return response.getResult().getOutput();
+    final var text= response.getResult().getOutput();
+    log.info("transcribed: {}", text);
+    return text;
   }
 
 
