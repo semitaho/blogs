@@ -7,10 +7,12 @@ import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.ai.openai.api.OpenAiAudioApi;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.function.Function;
 
 @Service
@@ -27,13 +29,14 @@ public class SpeechToTextService implements Function<InputStream, String> {
 
   @Override
   public String apply(InputStream audioInputStream) {
-    final var resource = new InputStreamResource(audioInputStream);
+    final var resource =  new FileSystemResource(Paths.get("uploads", "tiedosto.wav")); // new InputStreamResource(audioInputStream);
     // Use the transcription model to transcribe the audio input stream
     final var response = transcriptionModel
             .call(new AudioTranscriptionPrompt(resource,
                     OpenAiAudioTranscriptionOptions
                             .builder()
                             .temperature(0f)
+                            .responseFormat(OpenAiAudioApi.TranscriptResponseFormat.TEXT)
                             .model(OpenAiApi.ChatModel.GPT_4_O.value)
                             .build()));
     final var text= response.getResult().getOutput();
