@@ -4,8 +4,15 @@ package com.tahoo.guides.ai_command_line_client;
 import com.tahoo.guides.ai_command_line_client.history.ChatHistoryService;
 import com.tahoo.guides.ai_command_line_client.prompt.ChatPromptService;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.shell.command.CommandRegistration;
 import org.springframework.shell.command.annotation.Command;
+import org.springframework.shell.command.annotation.Option;
 import org.springframework.shell.standard.ShellComponent;
+
+import java.time.Duration;
+import java.util.List;
+
+import static java.util.stream.Collectors.joining;
 
 @ShellComponent
 @Command(group = "AI Commands")
@@ -22,17 +29,21 @@ public class AiCommands {
 
 
   @Command(command = "prompt", alias = "p", description = "Ask a question to the AI")
-  public void prompt(final String promptquestion) {
-    chatPromptService.stream(promptquestion).doOnNext(content -> {
-      System.out.print(content);
-      System.out.flush();
-    }).doOnComplete(() -> System.out.println()).blockLast();
+  public void prompt(@Option(required = true, arity = CommandRegistration.OptionArity.ONE_OR_MORE) final List<String> words) {
+    final var promptText = words.stream()
+            .collect(joining(" "));
+    chatPromptService.stream(promptText)
+            .delayElements(Duration.ofMillis(100))
+            .doOnNext(content -> {
+              System.out.print(content);
+              System.out.flush();
+            }).doOnComplete(System.out::println)
 
-    // Here you would typically call your AI service to get a response
-    // For now, we just echo the question
+            .blockLast();
+
   }
 
-  @Command(command = "history", description = "Display the conversion history")
+  @Command(command = "history", alias = "h", description = "Displays the conversation history of last 10 messages")
   public void history() {
     chatHistoryService.getHistory()
             .stream()
