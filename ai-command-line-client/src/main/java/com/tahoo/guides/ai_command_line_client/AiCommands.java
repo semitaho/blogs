@@ -27,6 +27,12 @@ public class AiCommands {
     this.chatHistoryService = chatHistoryService;
   }
 
+  @Command(command = "", description = "Default command")
+  public String defaultCommand(List<String> args) {
+    System.out.println("noh");
+    return "Received: " + args;
+  }
+
 
   @Command(command = "prompt", alias = "p", description = "Ask a question to the AI")
   public void prompt(@Option(required = true, arity = CommandRegistration.OptionArity.ONE_OR_MORE) final List<String> words) {

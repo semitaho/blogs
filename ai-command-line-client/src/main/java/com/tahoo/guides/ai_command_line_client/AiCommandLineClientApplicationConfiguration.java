@@ -1,5 +1,7 @@
 package com.tahoo.guides.ai_command_line_client;
 
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStyle;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -9,6 +11,7 @@ import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.shell.jline.PromptProvider;
 
 @Configuration
 public class AiCommandLineClientApplicationConfiguration {
@@ -38,5 +41,11 @@ public class AiCommandLineClientApplicationConfiguration {
                     .model(OpenAiApi.ChatModel.GPT_4_1_MINI.getValue())
                     .build())
             .build();
+  }
+
+  @Bean
+  public PromptProvider myPromptProvider() {
+    return () -> new AttributedString("gpt> ",
+            AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE));
   }
 }
