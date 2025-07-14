@@ -46,6 +46,6 @@ public class AiCommandLineClientApplicationConfiguration {
   @Bean
   public PromptProvider myPromptProvider() {
     return () -> new AttributedString("gpt> ",
-            AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE));
+            AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
   }
 }
